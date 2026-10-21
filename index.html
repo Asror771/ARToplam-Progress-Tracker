@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Advanced Articles · Progress Tracker</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700;9..144,900&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#f2f6f8;--bg2:#cfe8ef;--card:rgba(255,255,255,.75);--ink:#14232b;--mute:#587380;--red:#0b5d73;--gold:#e59a14;--gold2:#f6b93b;--line:#c7dde5;--ok:#1f9d55;--warn:#d6453d;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);color-scheme:light}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0f1b20;--bg2:#17323b;--card:rgba(22,40,47,.78);--ink:#e6f1f4;--mute:#9db6bf;--red:#5fd0e8;--line:#2c4a55;--ok:#4cd68a;--warn:#ff7a70;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#0f1b20;--bg2:#17323b;--card:rgba(22,40,47,.78);--ink:#e6f1f4;--mute:#9db6bf;--red:#5fd0e8;--line:#2c4a55;--ok:#4cd68a;--warn:#ff7a70;color-scheme:dark}
+*{box-sizing:border-box}html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;min-height:100vh;background:radial-gradient(900px 500px at 85% -5%,var(--bg2),transparent 70%),var(--bg);color:var(--ink);font:15px/1.5 Inter,system-ui,sans-serif}
+h1,h2,h3{font-family:Fraunces,serif;margin:0;color:var(--red);letter-spacing:.04em}
+.logo{font-family:Fraunces,serif;font-weight:900;color:var(--red);font-size:26px}
+.wrap{max-width:1060px;margin:0 auto;padding:18px 16px 60px}#app{max-width:860px;margin:0 auto}
+.card{background:var(--card);border:1px solid var(--line);border-radius:22px;padding:20px;backdrop-filter:blur(8px);margin-bottom:16px}
+.top{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:14px;flex-wrap:wrap}
+.who{font-family:Fraunces,serif;font-weight:600;color:var(--red);font-size:14px}
+button,input,select,textarea{font:inherit;color:inherit}
+:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
+.btn{border:1px solid var(--line);background:var(--card);color:var(--red);border-radius:14px;padding:8px 16px;font-family:Fraunces,serif;font-weight:700;cursor:pointer}
+.gold{width:100%;border:0;border-radius:14px;padding:14px;background:linear-gradient(90deg,var(--gold2),var(--gold));color:#2b1c1f;font-family:Fraunces,serif;font-weight:700;letter-spacing:.1em;cursor:pointer;box-shadow:0 8px 20px rgba(232,169,22,.3)}
+.in{width:100%;padding:13px;border-radius:14px;border:1px solid var(--line);background:var(--card);margin-bottom:12px;text-align:center}
+#login{margin-top:3vh}.lg-hero{display:grid;grid-template-columns:1.15fr .85fr;gap:40px;align-items:center}.lg-copy .logo{font-size:20px;margin-bottom:26px}.lg-h{font-size:clamp(30px,5vw,46px);line-height:1.1;letter-spacing:0;font-weight:900;margin:0 0 14px}.lg-copy>p{color:var(--mute);max-width:48ch;font-size:16px;margin:0 0 24px}.prev{padding:16px;margin:0}.prev .task{padding:10px 12px;margin-bottom:8px}.prev .task:last-child{margin-bottom:0}.lg-card{border-color:var(--gold);text-align:center;margin:0;padding:28px}.lg-card p{color:var(--mute);font-size:14px;margin:0 0 18px}.lg-stats{display:flex;justify-content:center;gap:18px;margin-top:18px;color:var(--mute);font-size:13px;flex-wrap:wrap}.lg-stats b{color:var(--red);font:700 17px Fraunces,serif}@media(max-width:900px){.lg-hero{grid-template-columns:1fr;gap:24px}}.err{color:var(--warn);font-size:13px;min-height:18px}
+.hero{display:flex;gap:20px;align-items:center;flex-wrap:wrap}
+.ring{--p:0;width:112px;height:112px;border-radius:50%;background:conic-gradient(var(--red) calc(var(--p)*1%),var(--line) 0);display:grid;place-items:center;flex:none}
+.ring span{width:86px;height:86px;border-radius:50%;background:var(--bg);display:grid;place-items:center;font-family:Fraunces,serif;font-weight:700;font-size:22px;color:var(--red)}
+.stat{border:1px solid var(--line);border-radius:16px;padding:10px 16px;text-align:center;min-width:92px}
+.stat b{display:block;font:700 24px Fraunces,serif;color:var(--red)}.stat small{color:var(--mute);font-size:11px;letter-spacing:.1em;text-transform:uppercase}
+.strip{display:flex;gap:6px;overflow-x:auto;padding:4px 0 10px}
+.dy{flex:none;width:44px;height:44px;border-radius:12px;border:1px solid var(--line);background:var(--card);font:700 13px Fraunces,serif;cursor:pointer}
+.dy.done{background:var(--ok);color:#fff;border-color:var(--ok)}.dy.cur{border-color:var(--gold);box-shadow:0 0 0 2px var(--gold)}.dy.sel{outline:2px solid var(--red)}.dy.lock{opacity:.4;cursor:not-allowed}
+.task{display:flex;align-items:center;gap:14px;padding:14px;border:1px solid var(--line);border-radius:16px;margin-bottom:10px;cursor:pointer;background:var(--card)}
+.task .e{width:44px;height:44px;display:grid;place-items:center;flex:none;filter:drop-shadow(0 3px 3px rgba(0,0,0,.2))}.task b{display:block}.task small{color:var(--mute)}.task div{flex:1}
+.chk{width:30px;height:30px;border-radius:9px;border:2px solid var(--line);display:grid;place-items:center;color:#fff;font-weight:700}
+.task.on{border-color:var(--ok)}.task.on .chk{background:var(--ok);border-color:var(--ok)}.task.on b{text-decoration:line-through;opacity:.6}
+.row{display:flex;justify-content:space-between;align-items:center;gap:10px}
+textarea.in{text-align:left;min-height:80px;resize:vertical;margin-top:8px}
+.lbl{font:600 12px Fraunces,serif;color:var(--red);letter-spacing:.12em;text-transform:uppercase;margin-bottom:10px}
+.grid4{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:12px;margin-bottom:16px}
+.grid4 .card{text-align:center;margin:0}.grid4 b{font:700 34px Fraunces,serif;color:var(--red);display:block}.grid4 small{color:var(--mute);font-size:11px;letter-spacing:.1em;text-transform:uppercase}
+.tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px}.tab{border:1px solid var(--line);background:var(--card);border-radius:10px;padding:6px 10px;font-size:12px;cursor:pointer}.tab.on{border-color:var(--gold);background:var(--bg2)}
+.bar{height:8px;border-radius:9px;background:var(--line);overflow:hidden}.bar i{display:block;height:100%;background:linear-gradient(90deg,var(--red),var(--gold))}
+.dots{display:grid;grid-template-columns:repeat(15,1fr);gap:3px;margin-top:8px}.dots i{height:9px;border-radius:3px;background:var(--line)}.dots i.p{background:var(--gold)}.dots i.f{background:var(--ok)}
+.stu{padding:14px 0;border-top:1px solid var(--line)}.stu:first-of-type{border-top:0}
+.hw{padding:10px 0;border-top:1px solid var(--line);font-size:14px}.hw small{color:var(--mute)}
+.empty{color:var(--mute);text-align:center;padding:18px}
+table{width:100%;border-collapse:collapse;font-size:14px}td,th{text-align:left;padding:8px 6px;border-top:1px solid var(--line)}th{border:0;color:var(--mute);font-weight:500}
+.sc{width:80px;padding:6px;margin:0}
+.hide{display:none!important}html,body{overflow-x:hidden;-webkit-text-size-adjust:100%}.lg-hero>*,.card{min-width:0}input,select,textarea{font-size:16px}.btn,.gold,.tab,.task{min-height:44px;touch-action:manipulation}.stu b,.hw div,.who{overflow-wrap:anywhere}.card table{display:block;overflow-x:auto}@media(max-width:600px){.wrap{padding:12px 12px 48px}.card{padding:16px;border-radius:18px}.lg-card{padding:20px}.hero{gap:14px}.ring{width:92px;height:92px}.ring span{width:70px;height:70px;font-size:18px}.stat{min-width:0;flex:1;padding:8px}.task{gap:10px;padding:12px}.lg-h{font-size:28px}}
+@media(max-width:520px){.dots{grid-template-columns:repeat(10,1fr)}}
+@media(prefers-reduced-motion:no-preference){.ring{transition:background .5s}.bar i{transition:width .5s}}
+</style></head><body><svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+<linearGradient id="gb1" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#6fd3ff"/><stop offset="1" stop-color="#1c5fd6"/></linearGradient>
+<linearGradient id="gb2" x1="1" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#a5e8ff"/><stop offset="1" stop-color="#2f84f0"/></linearGradient>
+<linearGradient id="gy" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ffe98a"/><stop offset="1" stop-color="#f29a1d"/></linearGradient>
+<linearGradient id="gr" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#ff7a8a"/><stop offset="1" stop-color="#d1223e"/></linearGradient>
+<linearGradient id="gt" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#6ff0d2"/><stop offset="1" stop-color="#0b9a85"/></linearGradient>
+<linearGradient id="ga" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ffd36e"/><stop offset="1" stop-color="#f0831a"/></linearGradient>
+<linearGradient id="gg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#7ee8a0"/><stop offset="1" stop-color="#16954a"/></linearGradient>
+<symbol id="i1" viewBox="0 0 48 48"><ellipse cx="24" cy="43" rx="15" ry="3" opacity=".2"/><path d="M5 11c7-3 14-2 19 2v27c-5-4-12-5-19-2z" fill="url(#gb1)"/><path d="M43 11c-7-3-14-2-19 2v27c5-4 12-5 19-2z" fill="url(#gb2)"/><path d="M9 16c5-1 9 0 12 2M9 23c5-1 9 0 12 2M27 18c3-2 7-3 12-2M27 25c3-2 7-3 12-2" stroke="#fff" stroke-opacity=".75" stroke-width="2.4" stroke-linecap="round" fill="none"/></symbol>
+<symbol id="i2" viewBox="0 0 48 48"><ellipse cx="24" cy="44" rx="15" ry="2.5" opacity=".2"/><rect x="6" y="5" width="29" height="36" rx="6" fill="url(#gy)"/><path d="M12 15h17M12 22h17M12 29h10" stroke="#fff" stroke-width="3" stroke-linecap="round" opacity=".85"/><g transform="rotate(32 37 28)"><rect x="33.5" y="12" width="7" height="25" rx="2" fill="url(#gr)"/><path d="M33.5 37h7l-3.5 8z" fill="#ffd9a8"/></g></symbol>
+<symbol id="i3" viewBox="0 0 48 48"><ellipse cx="24" cy="45" rx="14" ry="2.3" opacity=".2"/><path d="M5 10a6 6 0 0 1 6-6h16a6 6 0 0 1 6 6v10a6 6 0 0 1-6 6H17l-7 6v-6a6 6 0 0 1-5-6z" fill="url(#gt)"/><path d="M19 25a6 6 0 0 1 6-6h12a6 6 0 0 1 6 6v8a6 6 0 0 1-5 6v6l-7-6H25a6 6 0 0 1-6-6z" fill="url(#ga)" stroke="#fff" stroke-opacity=".5" stroke-width="1.5"/><circle cx="13" cy="15" r="2" fill="#fff"/><circle cx="20" cy="15" r="2" fill="#fff"/><circle cx="27" cy="15" r="2" fill="#fff"/></symbol>
+<symbol id="i4" viewBox="0 0 48 48"><ellipse cx="24" cy="45" rx="14" ry="2.3" opacity=".2"/><rect x="7" y="7" width="34" height="37" rx="7" fill="url(#gg)"/><rect x="12" y="13" width="24" height="26" rx="3" fill="#fff"/><rect x="16" y="3" width="16" height="9" rx="3" fill="#2f4858"/><path d="M17 26l5 5 9-11" stroke="#16954a" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" fill="none"/></symbol>
+<linearGradient id="gp" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#c9a6ff"/><stop offset="1" stop-color="#6c3fd1"/></linearGradient>
+<linearGradient id="gm" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ff9ec0"/><stop offset="1" stop-color="#e0306b"/></linearGradient>
+<symbol id="i5" viewBox="0 0 48 48"><ellipse cx="24" cy="45" rx="14" ry="2.3" opacity=".2"/><rect x="7" y="5" width="34" height="38" rx="7" fill="url(#gp)"/><rect x="12" y="11" width="24" height="26" rx="3" fill="#fff"/><path d="M16 19h16M16 25h16M16 31h8" stroke="#8a5be0" stroke-width="2.6" stroke-linecap="round"/><circle cx="35" cy="34" r="8" fill="url(#gg)" stroke="#fff" stroke-width="2"/><path d="M31.5 34l2.6 2.6 4.6-5.4" stroke="#fff" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" fill="none"/></symbol>
+<symbol id="i6" viewBox="0 0 48 48"><ellipse cx="24" cy="45" rx="13" ry="2.3" opacity=".2"/><rect x="16" y="3" width="16" height="25" rx="8" fill="url(#gm)"/><path d="M20 10h8M20 15h8M20 20h8" stroke="#fff" stroke-opacity=".7" stroke-width="2" stroke-linecap="round"/><path d="M9 22a15 15 0 0 0 30 0" stroke="#2f4858" stroke-width="3.4" stroke-linecap="round" fill="none"/><path d="M24 37v6M16 43h16" stroke="#2f4858" stroke-width="3.4" stroke-linecap="round"/></symbol>
+</defs></svg><div class="wrap">
+
+<section id="login"><div class="lg-hero">
+<div class="lg-copy"><div class="logo">ADVANCED ARTICLES</div>
+<h1 class="lg-h">Read harder articles and understand every line.</h1>
+<p>A 30-day reading course. Each day you read one article, learn its words, translate it aloud, do a reading test and finish with a writing and speaking check. Your teacher sees your progress.</p>
+<div class="card prev"><div class="row" style="margin-bottom:12px"><h2 style="font-size:18px">A day in the course</h2><span class="who">2/4 done</span></div>
+<div class="task on" style="cursor:default"><span class="e"><svg width="38" height="38" viewBox="0 0 48 48"><use href="#i1"/></svg></span><div><b>Read the Article</b><small>Read one advanced article, timed</small></div><span class="chk">✓</span></div><div class="task on" style="cursor:default"><span class="e"><svg width="38" height="38" viewBox="0 0 48 48"><use href="#i2"/></svg></span><div><b>Write and Memorize Word Meanings</b><small>Write each word, then test yourself</small></div><span class="chk">✓</span></div><div class="task " style="cursor:default"><span class="e"><svg width="38" height="38" viewBox="0 0 48 48"><use href="#i3"/></svg></span><div><b>Re-read and Translate Orally</b><small>Translate it out loud, sentence by sentence</small></div><span class="chk"></span></div><div class="task " style="cursor:default"><span class="e"><svg width="38" height="38" viewBox="0 0 48 48"><use href="#i4"/></svg></span><div><b>Do One Reading Test</b><small>Check every mistake</small></div><span class="chk"></span></div><div class="task " style="cursor:default"><span class="e"><svg width="38" height="38" viewBox="0 0 48 48"><use href="#i5"/></svg></span><div><b>Writing Check</b><small>Check every mistake in your writing</small></div><span class="chk"></span></div><div class="task " style="cursor:default"><span class="e"><svg width="38" height="38" viewBox="0 0 48 48"><use href="#i6"/></svg></span><div><b>Speaking Check</b><small>Check your pronunciation and fluency</small></div><span class="chk"></span></div></div></div>
+<div class="card lg-card"><h2 style="font-size:24px;margin-bottom:6px">Sign in</h2>
+<p>Enter your name and the access code from your teacher.</p>
+<input id="nm" class="in" placeholder="Your full name" autocomplete="name">
+<input id="cd" class="in" placeholder="Access code" type="password" autocomplete="off">
+<div class="err" id="er"></div>
+<button class="gold" id="go">ENTER</button>
+<div class="lg-stats"><span><b>30</b> days</span><span><b>6</b> steps a day</span><span><b>4</b> checkpoints</span></div></div>
+</div></section>
+
+<section id="app" class="hide"></section>
+</div>
+<script>
+const DAYS=30,MOCKS=[7,14,21,28],CODE="ARTICLES",TCODE="TEACHER",DAY=864e5;
+const TASKS=[["","Read the Article","Read one advanced article, timed"],["","Write and Memorize Word Meanings","Write each new word with its meaning, then test yourself"],["","Re-read and Translate Orally","Read it again and translate it out loud, sentence by sentence"],["","Do One Reading Test","Complete one reading test and check every mistake"],["","Writing Check","Write a short response about the article and check every mistake"],["","Speaking Check","Speak about the article out loud and check your pronunciation and fluency"]];
+const $=s=>document.querySelector(s),esc=s=>String(s??"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+let db=null,mem={},me=null,teacher=false,sel=1,tab=0,sortBy="progress",timer=null,wt=null;
+const ready=(async()=>{try{if(window.claude)db=await claude.use("db")}catch(e){db=null}})();
+async function loadAll(){await ready;if(db){try{(await db.collection("progress").get()).docs.forEach(d=>mem[d.id]=d.data())}catch(e){}}else{try{mem=JSON.parse(localStorage.getItem("aa")||"{}")}catch(e){}}}
+function save(){clearTimeout(wt);wt=setTimeout(async()=>{mem[me.id]=me;if(db){try{await db.collection("progress").doc(me.id).set(me)}catch(e){}}else{try{localStorage.setItem("aa",JSON.stringify(mem))}catch(e){}}},400)}
+let impMsg="";
+const enc=o=>"AAv1:"+btoa(unescape(encodeURIComponent(JSON.stringify(o))));
+function dec(c){try{c=c.trim();if(c.startsWith("AAv1:"))c=c.slice(5);const o=JSON.parse(decodeURIComponent(escape(atob(c))));return o&&o.id&&o.name?o:null}catch(e){return null}}
+function importCodes(txt){let ok=0,bad=0;txt.split(/\s+/).filter(Boolean).forEach(c=>{const o=dec(c);if(!o){bad++;return}
+  if(!mem[o.id]||(o.last||0)>=(mem[o.id].last||0))mem[o.id]=o;ok++});
+  try{localStorage.setItem("aa",JSON.stringify(mem))}catch(e){}
+  impMsg=ok+" student record(s) imported"+(bad?", "+bad+" code(s) could not be read":"")+".";renderT()}
+const cnt=(s,d)=>TASKS.filter((_,i)=>s.done?.[d+"-"+i]).length;
+const total=s=>Object.values(s.done||{}).filter(Boolean).length;
+const pct=s=>Math.round(total(s)/(DAYS*TASKS.length)*100);
+const curDay=s=>{for(let d=1;d<=DAYS;d++)if(cnt(s,d)<TASKS.length)return d;return DAYS};
+const today=()=>new Date().toISOString().slice(0,10);
+function streak(s){let n=0,t=new Date();if(!s.act?.[t.toISOString().slice(0,10)])t=new Date(t-DAY);while(s.act?.[t.toISOString().slice(0,10)]){n++;t=new Date(t-DAY)}return n}
+
+$("#go").onclick=async()=>{
+  const n=$("#nm").value.trim(),c=$("#cd").value.trim(),g="";
+  if(c===TCODE){teacher=true;await loadAll();if(db)timer=setInterval(async()=>{await loadAll();renderT()},20000);return renderT()}
+  if(!n||c!==CODE){$("#er").textContent=!n?"Enter your full name.":"That access code is not right. Ask your teacher for the current one.";return}
+  await loadAll();const id=n.toLowerCase().replace(/[^a-z0-9]+/g,"-").slice(0,60);
+  me=mem[id]||{id,name:n,group:g,done:{},hw:{},mock:{},act:{},last:Date.now()};if(g)me.group=g;
+  sel=curDay(me);mem[id]=me;save();renderS()};
+async function removeStudent(id){
+  const s=mem[id];if(!s)return;
+  if(!confirm("Remove "+s.name+"? All their progress, responses and scores will be deleted. This cannot be undone."))return;
+  delete mem[id];
+  if(db){try{await db.collection("progress").doc(id).delete()}catch(e){}}
+  else{try{localStorage.setItem("aa",JSON.stringify(mem))}catch(e){}}
+  renderT()}
+function out(){clearInterval(timer);me=null;teacher=false;$("#app").classList.add("hide");$("#login").classList.remove("hide");$("#cd").value=""}
+function shell(inner,who){$("#login").classList.add("hide");const a=$("#app");a.classList.remove("hide");
+  a.innerHTML=`<div class="top"><div class="logo" style="font-size:22px">ADVANCED ARTICLES</div><div class="row"><span class="who">${who}</span><button class="btn" data-a="out">Log out</button></div></div>${inner}`}
+
+function renderS(){
+  const p=pct(me),cd=curDay(me),dn=cnt(me,sel);
+  const strip=Array.from({length:DAYS},(_,i)=>{const d=i+1,full=cnt(me,d)==TASKS.length,lock=d>cd;return `<button class="dy ${full?"done":""} ${d==cd?"cur":""} ${d==sel?"sel":""} ${lock?"lock":""}" data-d="${d}" ${lock?"disabled":""} aria-label="Day ${d}">${d}</button>`}).join("");
+  const tasks=TASKS.map((t,i)=>`<div class="task ${me.done[sel+"-"+i]?"on":""}" role="checkbox" tabindex="0" aria-checked="${!!me.done[sel+"-"+i]}" data-t="${i}"><span class="e"><svg width="42" height="42" viewBox="0 0 48 48"><use href="#i${i+1}"/></svg></span><div><b>${t[1]}</b><small>${t[2]}</small></div><span class="chk">${me.done[sel+"-"+i]?"✓":""}</span></div>`).join("");
+  const mk=MOCKS.indexOf(sel),hw=me.hw[sel]?.text||"";
+  shell(`<div class="card hero"><div class="ring" style="--p:${p}"><span>${p}%</span></div>
+    <div style="flex:1;min-width:200px"><h1 style="font-size:26px">${esc(me.name.split(" ")[0])}</h1><p style="color:var(--mute);margin:4px 0 12px">Finish all six steps to unlock the next article.</p>
+    <div class="row" style="justify-content:flex-start;flex-wrap:wrap"><div class="stat"><b>${cd}</b><small>Current day</small></div><div class="stat"><b>${streak(me)}</b><small>Day streak</small></div><div class="stat"><b>${DAYS-Math.min(cd,DAYS)+(cnt(me,DAYS)==TASKS.length?0:0)}</b><small>Days left</small></div></div></div></div>
+  <div class="card"><div class="lbl">30-day plan</div><div class="strip">${strip}</div></div>
+  <div class="card"><div class="row" style="margin-bottom:14px"><h2>Day ${sel}</h2><span class="who">${dn}/${TASKS.length} done</span></div>${tasks}
+    <div class="lbl" style="margin-top:18px">Written response for day ${sel}</div>
+    <textarea class="in" id="hw" placeholder="Paste your written response or a link here, then send it to your teacher.">${esc(hw)}</textarea>
+    <div class="row"><small style="color:var(--mute)">${me.hw[sel]?"Sent "+new Date(me.hw[sel].t).toLocaleString():"Not sent yet"}</small><button class="btn" data-a="hw">Send response</button></div>
+    ${mk>=0?`<div class="lbl" style="margin-top:18px">Checkpoint ${mk+1} score</div><div class="row" style="justify-content:flex-start"><input class="in sc" id="mk" type="number" min="0" max="100" step="1" value="${me.mock[mk+1]??""}" placeholder="0–100"><button class="btn" data-a="mock" data-n="${mk+1}">Save score</button></div>`:""}</div>
+  <div class="card"><div class="lbl">Send your progress to your teacher</div>
+    <p style="color:var(--mute);margin:0 0 10px">Press "Send response" first, then create your progress code and send it to your teacher (message, email or chat). Do this after each study session.</p>
+    <div class="row" style="justify-content:flex-start;flex-wrap:wrap;gap:8px"><button class="btn" data-a="code">Copy my progress code</button><button class="btn" data-a="dl">Download as file</button></div>
+    <textarea class="in" id="cdbox" readonly style="margin-top:10px;display:none;min-height:70px"></textarea><small id="cdmsg" style="color:var(--mute)"></small></div>`,
+    `${esc(me.name)}${me.group?" ("+esc(me.group)+")":""}`)}
+
+function renderT(){
+  const S=Object.values(mem),now=Date.now();
+  const avg=S.length?Math.round(S.reduce((a,s)=>a+pct(s),0)/S.length):0;
+  const act=S.filter(s=>now-s.last<DAY).length,ina=S.filter(s=>now-s.last>2*DAY).length;
+  const hws=[];S.forEach(s=>Object.entries(s.hw||{}).forEach(([d,h])=>hws.push({s,d,...h})));hws.sort((a,b)=>b.t-a.t);
+  const n=tab+1,rows=S.filter(s=>s.mock?.[n]!=null&&s.mock[n]!=="").sort((a,b)=>b.mock[n]-a.mock[n]);
+  const list=[...S].sort((a,b)=>sortBy=="name"?a.name.localeCompare(b.name):sortBy=="recent"?b.last-a.last:pct(b)-pct(a));
+  shell(`<h1 style="font-size:28px;margin-bottom:14px">Class progress</h1>
+  <div class="card"><div class="lbl">Import student progress</div>
+    <p style="color:var(--mute);margin:0 0 10px">Paste the progress codes students send you (one or many), or load their downloaded files.</p>
+    <textarea class="in" id="imp" placeholder="Paste progress codes here" style="min-height:70px"></textarea>
+    <div class="row" style="justify-content:flex-start;flex-wrap:wrap;gap:8px;margin-top:8px"><button class="btn" data-a="imp">Import codes</button><label class="btn" style="cursor:pointer">Load files<input type="file" id="impf" multiple accept=".txt,.json,text/plain" style="display:none"></label><small style="color:var(--mute)">${esc(impMsg)}</small></div></div>
+  <div class="grid4"><div class="card"><b>${S.length}</b><small>Students</small></div><div class="card"><b>${avg}%</b><small>Avg progress</small></div><div class="card"><b>${act}</b><small>Active last 24h</small></div><div class="card"><b style="color:${ina?"var(--warn)":"var(--ok)"}">${ina}</b><small>Inactive 2+ days</small></div></div>
+  <div class="card"><div class="lbl">Submitted responses</div>${hws.length?hws.slice(0,30).map(h=>`<div class="hw"><b>${esc(h.s.name)}</b> · Day ${h.d} <small>${new Date(h.t).toLocaleString()}</small><div>${esc(h.text)}</div></div>`).join(""):'<div class="empty">No responses submitted yet.</div>'}</div>
+  <div class="card"><div class="lbl">Weekly checkpoint scores</div><div class="tabs">${MOCKS.map((d,i)=>`<button class="tab ${i==tab?"on":""}" data-k="${i}">Checkpoint ${i+1} · Day ${d}</button>`).join("")}</div>
+  ${rows.length?`<table><tr><th>Student</th><th>Score</th></tr>${rows.map(s=>`<tr><td>${esc(s.name)}</td><td><b>${esc(s.mock[n])}</b></td></tr>`).join("")}</table>`:'<div class="empty">No scores for this checkpoint yet.</div>'}</div>
+  <div class="card"><div class="row" style="margin-bottom:6px"><div class="lbl" style="margin:0">Students · day-by-day progress</div><select class="btn" id="so" aria-label="Sort"><option value="progress" ${sortBy=="progress"?"selected":""}>Sort: progress</option><option value="name" ${sortBy=="name"?"selected":""}>Sort: name</option><option value="recent" ${sortBy=="recent"?"selected":""}>Sort: recent</option></select></div>
+  ${list.length?list.map(s=>`<div class="stu"><div class="row"><b>${esc(s.name)} <small style="color:var(--mute);font-weight:400">${esc(s.group||"")}</small></b><span class="row" style="gap:8px"><span class="who">Day ${curDay(s)} · ${pct(s)}%</span><button class="btn" style="padding:4px 10px;min-height:32px;font-size:13px;color:var(--warn)" data-a="rm" data-id="${esc(s.id)}" aria-label="Remove ${esc(s.name)}">Remove</button></span></div><div class="bar" style="margin-top:6px"><i style="width:${pct(s)}%"></i></div><div class="dots">${Array.from({length:DAYS},(_,i)=>{const c=cnt(s,i+1);return `<i class="${c==TASKS.length?"f":c?"p":""}" title="Day ${i+1}: ${c}/${TASKS.length}"></i>`}).join("")}</div></div>`).join(""):'<div class="empty">No students yet. They appear here once they log in and tick a task.</div>'}</div>`,"Teacher")}
+
+document.addEventListener("click",e=>{
+  const b=e.target.closest("[data-a],[data-d],[data-t],[data-k]");if(!b)return;
+  if(b.dataset.a=="out")return out();
+  if(b.dataset.k!=null){tab=+b.dataset.k;return renderT()}
+  if(b.dataset.a=="rm"&&teacher)return removeStudent(b.dataset.id);
+  if(b.dataset.a=="imp"&&teacher)return importCodes($("#imp").value);
+  if(!me)return;
+  if(b.dataset.d){sel=+b.dataset.d;return renderS()}
+  if(b.dataset.t!=null){const k=sel+"-"+b.dataset.t;me.done[k]=!me.done[k];me.last=Date.now();me.act=me.act||{};me.act[today()]=1;save();return renderS()}
+  if(b.dataset.a=="code"||b.dataset.a=="dl"){const c=enc(me),box=$("#cdbox");box.style.display="block";box.value=c;
+    if(b.dataset.a=="dl"){const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([c],{type:"text/plain"}));a.download="progress-"+me.id+".txt";a.click();$("#cdmsg").textContent="File downloaded. Send it to your teacher.";return}
+    box.select();let ok=false;try{navigator.clipboard.writeText(c);ok=true}catch(x){try{ok=document.execCommand("copy")}catch(y){}}
+    $("#cdmsg").textContent=ok?"Code copied. Paste it to your teacher.":"Select the code above, copy it and send it to your teacher.";return}
+  if(b.dataset.a=="hw"){const t=$("#hw").value.trim();if(!t)return;me.hw[sel]={text:t,t:Date.now()};me.last=Date.now();save();renderS()}
+  if(b.dataset.a=="mock"){const v=$("#mk").value;if(v==="")return;me.mock[b.dataset.n]=Math.min(100,Math.max(0,+v));save();renderS()}
+});
+document.addEventListener("keydown",e=>{if((e.key==" "||e.key=="Enter")&&e.target.dataset?.t!=null){e.preventDefault();e.target.click()}if(e.key=="Enter"&&e.target.closest("#login"))$("#go").click()});
+document.addEventListener("change",async e=>{if(e.target.id=="impf"&&teacher){const t=(await Promise.all([...e.target.files].map(f=>f.text()))).join("\n");return importCodes(t)}if(e.target.id=="so"){sortBy=e.target.value;renderT()}});
+</script></body></html>
